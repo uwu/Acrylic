@@ -51,6 +51,8 @@ electron.ipcMain.on('ewc-enable', (event, settings) => {
 
         mainWindow.setBackgroundColor(`#${toHex(settings.opacity)}${settings.color}`);
 
+        mainWindow.setHasShadow(settings.shadow);
+
         if (settings.blurType == 0) ewc.setAcrylic(mainWindow, 16777216);
         else if (settings.blurType == 1) ewc.setBlurBehind(mainWindow, 16777216);
         else ewc.setTransparentGradient(mainWindow, 16777216);
@@ -67,6 +69,7 @@ electron.ipcMain.on('ewc-disable', (event) => {
 
         if (!mainWindow) throw 'Unable to get main window.'
 
+        mainWindow.setHasShadow(true);
         ewc.disable(mainWindow, 16777216);
         event.reply('ewc-disable', 'Disabled.', false);
     } catch (exception) {

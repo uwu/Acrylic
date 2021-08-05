@@ -10,14 +10,14 @@ console.log(`%c[Acrylic]%c %s`, `color: #ceb4ed`, `color: inherit`, `Injected su
 
 const utils = {
     validateSettings: (s) => {
-        return (typeof s == 'object' && s?.color != undefined && typeof s?.color == 'string' && s?.opacity != undefined && typeof s?.opacity == 'number' && s?.enabled != undefined && typeof s?.enabled == 'boolean' && s?.blurType != undefined && typeof s?.blurType == 'number' && s?.injectCss != undefined && typeof s?.injectCss == 'boolean')
+        return (typeof s == 'object' && s?.color != undefined && typeof s?.color == 'string' && s?.opacity != undefined && typeof s?.opacity == 'number' && s?.enabled != undefined && typeof s?.enabled == 'boolean' && s?.blurType != undefined && typeof s?.blurType == 'number' && s?.injectCss != undefined && typeof s?.injectCss == 'boolean' && s?.shadow != undefined && typeof s?.shadow == 'boolean')
     },
 
     writeSettings: (s) => {
-        writeFile(path.join(__dirname, 'assets/settings.json')), JSON.stringify(s), (err) => {
+        writeFile(path.join(__dirname, 'assets/settings.json'), JSON.stringify(s), (err) => {
             if (err) console.err('[Acrylic] Could not save settings to file: %s', err);
             else console.log('%c[Acrylic]%c %s', 'color: #ceb4ed', 'color: inherit', 'Settings saved successfully.');
-        }
+        });
     },
 
     loadSettings: (s) => {
@@ -40,7 +40,8 @@ if (!utils.validateSettings(settings)) {
         "injectCss": true,
         "color": "ffffff",
         "opacity": 0,
-        "blurType": 0
+        "blurType": 0,
+        "shadow": true
     }
     utils.writeSettings(settings);
 } else {
@@ -64,16 +65,12 @@ const acrylic = {
         ipcRenderer.send('ewc-disable');
         injectedCSS?.remove();
     },
-    updateSettings: (_settings, value) => {
-        const tempSettings = settings;
-        if(!value) {
-            tempSettings[_settings] = value;
-        }
-        else {
-            tempSettings = _settings;
-        }
+    updateSettings: (settingName, newValue) => {
+        let tempSettings = { ...settings };
+        tempSettings[settingName] = newValue;
         if (!utils.validateSettings(tempSettings)) return console.error('[ewc-update] Invalid settings provided.');
         settings = { ...tempSettings };
+        console.log(settings);
         utils.writeSettings(settings);
         acrylic.enable();
     },
