@@ -1,5 +1,5 @@
 # Acrylic
- Spiritual successor to Glasscord. Does not provide compatibility with Glasscord themes, only translucency effects.
+ (Windows Only for now) Spiritual successor to Glasscord. Does not provide compatibility with Glasscord themes, only translucency effects.
 
 # Disclaimer
  This Discord mod is still a work in progress. Features and compatibility may change at any time!
