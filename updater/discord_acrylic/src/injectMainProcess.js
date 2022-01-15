@@ -3,6 +3,22 @@ const electronCache = require.cache[require.resolve("electron")];
 
 console.log(`[${'\x1b[38;2;206;180;237mAcrylic\x1b[0m'}]`, `Injected into main process.`);
 
+if (process.platform == 'darwin') {
+    console.log(`[${'\x1b[38;2;206;180;237mAcrylic\x1b[0m'}]`, `MacOS cannot be supported. Discord forces nodeIntegration to be disabled.`);
+    console.log(`[${'\x1b[38;2;206;180;237mAcrylic\x1b[0m'}]`, `See "https://gist.github.com/kevinsawicki/9d05fabdee32105367969bbca259ab3e#gistcomment-3602972".`);
+    const options = {
+        type: 'warning',
+        buttons: ['Continue', 'Close Discord'],
+        defaultId: 0,
+        title: 'Warning',
+        message: `Acrylic cannot, and never will, work on MacOS due to Discord's electron fork disabling some required features.`,
+        detail: `If you continue, Discord will load normally and Acrylic won't be injected.\nPlease uninstall Acrylic to avoid seeing this message again.`
+    };
+
+    if (electron.dialog.showMessageBoxSync(null, options)) process.exit();
+    else return;
+}
+
 const inject = "DiscordNative.nativeModules.requireModule('discord_acrylic')";
 
 let mainWindow = null;
@@ -64,23 +80,23 @@ ipcMain.on('enableAcrylic', (event, settings) => {
                 if(process.platform == "win32"){
                     ewc.setAcrylic(mainWindow);
                 }
-                else if(process.platform == "darwin") {
-                    mainWindow.setVibrancy("under-window");
+                else if(process.platform == "linux") {
+
                 }
                 break;
             case 1:
                 if(process.platform == "win32"){
                     ewc.setBlurBehind(mainWindow);
                 }
-                else if(process.platform == "darwin") {
-                    mainWindow.setVibrancy("fullscreen-ui");
+                else if(process.platform == "linux") {
+
                 }
                 break;
             case 3:
                 if(process.platform == "win32"){
                     ewc.setTransparentGradient(mainWindow);
                 }
-                else if(process.platform == "darwin") {
+                else if(process.platform == "linux") {
                     mainWindow.setVibrancy("content");
                 }
                 break;
@@ -88,8 +104,8 @@ ipcMain.on('enableAcrylic', (event, settings) => {
                 if(process.platform == "win32"){
                     ewc.disable(mainWindow);
                 }
-                else if(process.platform == "darwin") {
-                    mainWindow.setVibrancy(null);
+                else if(process.platform == "linux") {
+
                 }
                 break;
         }
@@ -112,8 +128,8 @@ ipcMain.on('disableAcrylic', (event) => {
         if(process.platform == "win32"){
             ewc.disable(mainWindow);
         }
-        else if(process.platform == "darwin") {
-            mainWindow.setVibrancy(null);
+        else if(process.platform == "linux") {
+
         }
 
         console.log(`[${'\x1b[38;2;206;180;237mAcrylic\x1b[0m'}]`, `Successfully updated.`);
