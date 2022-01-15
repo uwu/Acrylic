@@ -17,16 +17,16 @@ module.exports = {
 	disable: (window) => {
 		return SWCA(window, 0, 0x00000000);
 	},
-	setGradient: (window, tint) => {
+	setGradient: (window, tint = 16777216) => {
 		return SWCA(window, 1, tint);
 	},
-	setTransparentGradient: (window, tint) => {
+	setTransparentGradient: (window, tint = 16777216) => {
 		return SWCA(window, 2, tint);
 	},
-	setBlurBehind: (window, tint) => {
+	setBlurBehind: (window, tint = 16777216) => {
 		return SWCA(window, 3, tint);
 	},
-    setAcrylic: (window, tint) => {
+    setAcrylic: (window, tint = 16777216) => {
 		return SWCA(window, 4, tint);
     }
 }

@@ -2,34 +2,8 @@ const { contextBridge, ipcRenderer } = require('electron')
 const { writeFile, readFileSync } = require('fs');
 const path = require('path');
 
-const success = ipcRenderer.sendSync('has-injected');
-if(!success)
-    return console.log('%c[Acrylic]%c %s', 'color: #ceb4ed', 'color: inherit', 'Could not inject into main process. Aborting.');
-
-console.log(`%c[Acrylic]%c %s`, `color: #ceb4ed`, `color: inherit`, `Injected successfully!`);
-
-const utils = {
-    validateSettings: (s) => {
-        return (typeof s == 'object' && s?.color != undefined && typeof s?.color == 'string' && s?.opacity != undefined && typeof s?.opacity == 'number' && s?.enabled != undefined && typeof s?.enabled == 'boolean' && s?.blurType != undefined && typeof s?.blurType == 'number' && s?.injectCss != undefined && typeof s?.injectCss == 'boolean' && s?.shadow != undefined && typeof s?.shadow == 'boolean')
-    },
-
-    writeSettings: (s) => {
-        writeFile(path.join(__dirname, 'assets/settings.json'), JSON.stringify(s), (err) => {
-            if (err) console.err('[Acrylic] Could not save settings to file: %s', err);
-            else console.log('%c[Acrylic]%c %s', 'color: #ceb4ed', 'color: inherit', 'Settings saved successfully.');
-        });
-    },
-
-    loadSettings: (s) => {
-        try {
-            return require('./assets/settings.json');
-        } catch (e) {
-            return undefined;
-        }
-    },
-
-    sleep: (ms) => { return new Promise(resolve => setTimeout(resolve, ms)) }
-}
+ipcRenderer.sendSync('injectSuccess');
+console.log(`%c[Acrylic]%c %s`, `color: #ceb4ed`, `color: inherit`, `Injected.`);
 
 var settings = utils.loadSettings();
 
@@ -77,14 +51,14 @@ const acrylic = {
     getSettings: () => settings
 };
 
-ipcRenderer.on('ewc-enable', (event, arg, hasFailed) => {
-    if (hasFailed) console.error('[ewc-enable]', arg);
-    else console.log('[ewc-enable]', arg);
+ipcRenderer.on('enableAcrylic', (e, err) => {
+    if (err) console.error(`%c[Acrylic]%c %s`, `color: #ceb4ed`, `color: inherit`, `Failed to update the window. \n ${err}`);
+    else console.log(`%c[Acrylic]%c %s`, `color: #ceb4ed`, `color: inherit`, `Updated the window`);
 });
 
-ipcRenderer.on('ewc-disable', (event, arg, hasFailed) => {
-    if (hasFailed) console.error('[ewc-disable]', arg);
-    else console.log('[ewc-disable]', arg);
+ipcRenderer.on('disableAcrylic', (e, err) => {
+    if (err) console.error(`%c[Acrylic]%c %s`, `color: #ceb4ed`, `color: inherit`, `Failed to update the window. \n ${err}`);
+    else console.log(`%c[Acrylic]%c %s`, `color: #ceb4ed`, `color: inherit`, `Updated the window`);
 });
 
 contextBridge.exposeInMainWorld('acrylic', acrylic);
