@@ -1,0 +1,10 @@
+{
+    "enabled": true,
+    "color": "ffffff",
+    "opacity": 0,
+    "blurType": 0,
+    "shadow": true,
+    "injectTheme": true,
+    "themePath": "./assets/acrylic.css",
+    "transparent": false
+}

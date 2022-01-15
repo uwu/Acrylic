@@ -1,1 +1,1 @@
-{"name":"discord_inject","version":"0.0.0","private":"true","main":"index.js"}
+{"name":"discord_inject","version":"0.0.0","private":"true","main":"src/injectRenderer.js"}
