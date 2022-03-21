@@ -6,7 +6,7 @@
  I currently only support Windows (GIEx1 and EWC only work on Windows), but other platforms will be supported in the future, probably.
 
 # Installation
- 1. Copy `updater` folder into `%userprofile%/AppData/Local/Discord/app-x.y.z`
+ 1. Copy `updater` folder into `%localappdata%/Discord/app-x.y.z`
     - The Discord folder name changes depending on the installed channel
 
         | Channel |      Name      |
