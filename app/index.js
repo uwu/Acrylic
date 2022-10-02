@@ -2,7 +2,16 @@ const electron = require("electron");
 const path = require("path");
 const fs = require("fs");
 
-const vibe = require("./vibe.node");
+
+var vibe = null;
+
+if(process.platform === "win32") {
+  vibe = require("./vibe.node");
+  vibe.setup(electron.app);
+  console.log("[Acrylic] Setting up the vibe~");
+} else {
+  console.log("[Acrylic] Not getting the right vibes...");
+}
 
 let mainWindow = null;
 
@@ -16,10 +25,6 @@ function copyDir(src, dest) {
       entry.isDirectory() ? copyDir(srcPath, destPath) : fs.copyFileSync(srcPath, destPath);
   }
 }
-
-vibe.setup(electron.app);
-
-console.log("[Acrylic] Setting up the vibe 💫");
 
 const basePath = path.join(path.dirname(require.main.filename), "..");
 const modulesPath = path.join(basePath, "..", "modules");
@@ -80,7 +85,7 @@ for (const propertyName of propertyNames) {
     get: () => propertyName === "BrowserWindow" ? class extends BrowserWindow {
       constructor(opts) {
 
-        if(opts.resizable) {
+        if(opts.resizable && process.platform == "win32") {
           opts.frame = true;
         }
 
@@ -92,8 +97,11 @@ for (const propertyName of propertyNames) {
           mainWindow = window;
 
           window.webContents.on("dom-ready", () => {
-            window.setBackgroundColor("#00000000");
-            vibe.setDarkMode(window);
+            if(process.platform == "win32") {
+              window.setBackgroundColor("#00000000");
+              vibe.setDarkMode(window);
+            }
+
             window.webContents.executeJavaScript(`DiscordNative.nativeModules.requireModule("discord_acrylic");`);
           });
         }
@@ -171,10 +179,10 @@ electron.ipcMain.on("css-reload", () => {
 
 electron.ipcMain.on("enable", () => {
   console.log("[Acrylic] Enabling Acrylic.");
-  vibe.applyEffect(mainWindow, "acrylic");
+  vibe?.applyEffect?.(mainWindow, "acrylic");
 });
 
 electron.ipcMain.on("disable", () => {
   console.log("[Acrylic] Disabling Acrylic.");
-  vibe.clearEffects(mainWindow);
+  vibe?.clearEffects?.(mainWindow);
 });
