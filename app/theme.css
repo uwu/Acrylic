@@ -5,6 +5,7 @@
           --background-secondary-chat: #2f3136a0;
           --background-secondary-alt: #292b2f00;
           --background-tertiary: #20222570;
+          --background-quaternay: #20222570;
           --background-logo: #36393fa0;
           --deprecated-card-bg: #36393f4c;
           --deprecated-store-bg: #36393f00;
@@ -15,22 +16,102 @@
           --background-lights-out: #000;
           --text-lights-out: #f0f0f0;
           --background-titlebar: #202225AF;
-          --background-floating: #2f313650;
-          --interactive-muted: #8a8ca350;
+          --background-floating: #383841ef;
+          --interactive-muted: #93939750;
           --background-mobile-primary: var(--background-secondary);
-          --channeltextarea-background: var(--background-secondary);
+          --channeltextarea-background: #9289891f;
+          --background-modifier-accent: #fffefe15;
           --background-modifier-selected: var(--background-tertiary);
-          --scrollbar-thin-thumb: var(--background-secondary);
-          --scrollbar-thin-track: var(--background-secondary);
-          --scrollbar-auto-thumb: var(--background-secondary);
-          --scrollbar-auto-track: var(--background-secondary);
+          --scrollbar-thin-thumb: var(--background-primary);
+          --scrollbar-thin-track: var(--background-primary);
+          --scrollbar-auto-thumb: var(--background-tertiary);
+          --scrollbar-auto-track: var(--background-primary);
         }
 
-        html, body, .appMount-2yBXZl, body, .app-2CXKsg, .members-3WRCEx, .members-3WRCEx>div {
+        html, body, 
+        .appMount-2yBXZl, 
+        .app-2CXKsg, .bg-1QIAus,
+        .members-3WRCEx, .members-3WRCEx>div,
+        .scroller-3X7KbA, .guilds-2JjMmN,
+        .container-1NXEtd, .container-2McqkF,
+        .channelName-3w2Y3c {
           background: transparent !important;
         }
 
+        .chat-2ZfjoI, .scroller-1ox3I2 {
+          background: var(--background-secondary);
+        }
+
+        .searchBar-3TnChZ {
+          box-shadow: none !important;
+          background: var(--background-secondary);
+        }
+
+        .container-ZMc96U.themed-Hp1KC_ {
+          background: var(--background-tertiary);
+        }
+
+        .circleIconButton-1VxDrg, .childWrapper-1j_1ub {
+          color:white;
+          background: var(--background-logo);
+        }
+        .circleIconButton-1VxDrg.selected-2r1Hvo {
+          background: var(--background-floating);
+        }
+
+        .userPopout-2j1gM4, .contentWrapper-3vHNP2,
+        .tooltip-14MtrL, .messagesPopoutWrap-3zryHW,
+        .browser-mnQ1T7, .recentMentionsPopout-2bI1ZN {
+          background-color: var(--background-floating);
+        }
+
+        .searchOption-3u1gRt::after,
+        .option-ayUoaq::after,
+        .tabBody-2dgbAs::before,
+        .content-1jQy2l::before {
+          display: none;
+        }
+
+        .divider-IqmEqJ {
+          margin-top: 2.0rem !important;
+        }
+
+        .content-3spvdd {
+          transform: translate(0%, -100%);
+        }
+
+        .container-YkUktl {
+          background: var(--background-tertiary);
+          height: 60px;
+        }
+
+        .messagesWrapper-RpOMA3 {
+          margin-bottom: 8px;
+        }
+
+        .form-3gdLxP {
+          background: var(--background-tertiary);
+        }
+
+        .channelTextArea-1FufC0 {
+          margin-top: 8px;
+          margin-bottom: 9px;
+        }
+
+        .animatedContainer-2laTjx {
+          background: var(--background-tertiary);
+          box-shadow: none;
+        }
+
+        .communityInfoVisible-3zc5_s .header-3OsQeK, 
+        .communityInfoVisible-3zc5_s .header-3OsQeK:hover, 
+        .hasBanner-2IrYih .header-3OsQeK, 
+        .hasBanner-2IrYih .header-3OsQeK:hover {
+          background: var(--background-secondary);
+        }
+
         .header-3OsQeK {
+          background: var(--background-tertiary);
           box-shadow: none;
         }
 

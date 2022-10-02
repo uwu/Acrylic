@@ -144,10 +144,15 @@ electron.ipcMain.on("open-css", () => {
 		width: 1000,
 		height: 800,
 		autoHideMenuBar: true,
+    backgroundColor: "#1e1e1e",
     webPreferences: {
       preload: path.join(path.join(basePath, "app", "css_editor", "preload.js")),
     },
 	});
+
+  if(process.platform == "win32") {
+    vibe.setDarkMode(cssEditor);
+  }
 
 	cssEditor.setIcon(path.join(basePath, "app", "css_editor", "favicon.png"));
 	cssEditor.loadFile(path.join(basePath, "app", "css_editor", "index.html"));
