@@ -6,21 +6,6 @@ const vibe = require("./vibe.node");
 
 let mainWindow = null;
 
-if (process.platform != 'win32') {
-  console.log(`[${'\x1b[38;2;206;180;237mAcrylic\x1b[0m'}]`, `Unsupported OS`);
-  const options = {
-      type: 'warning',
-      buttons: ['Continue', 'Close Discord'],
-      defaultId: 0,
-      title: 'Warning',
-      message: 'Acrylic only supports Windows 10 or newer! If you continue, Acrylic will not be injected.',
-      detail: `Please consider uninstalling.`
-  };
-
-  if (electron.dialog.showMessageBoxSync(null, options)) process.exit();
-  else return;
-}
-
 function copyDir(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
   const entries = fs.readdirSync(src, { withFileTypes: true });
@@ -32,10 +17,9 @@ function copyDir(src, dest) {
   }
 }
 
-electron.nativeTheme.themeSource = 'dark';
 vibe.setup(electron.app);
 
-console.log("[Acrylic] Setting up vibe.");
+console.log("[Acrylic] Setting up the vibe 💫");
 
 const basePath = path.join(path.dirname(require.main.filename), "..");
 const modulesPath = path.join(basePath, "..", "modules");
@@ -55,7 +39,11 @@ require.main.filename = path.join(originalAppPath, originalPackage.main);
 
 electron.app.setAppPath(originalAppPath);
 electron.app.name = originalPackage.name;
+//#endregion
 
+const electronCache = require.cache[require.resolve("electron")];
+
+//#region CSP Removal
 electron.app.on("ready", () => {
   // Removes CSP
   electron.session.defaultSession.webRequest.onHeadersReceived(
@@ -71,55 +59,96 @@ electron.app.on("ready", () => {
       done({ responseHeaders });
     }
   );
-});
 
-electron.app.on('browser-window-created', (event, window) => {
-  window.on("show", () => {
-    window.setBackgroundColor("#00000000");
-  });
-  if(window.title.startsWith("Discord") && !mainWindow) {
-    console.log("[Acrylic] Found Discord window.");
-    mainWindow = window;
-    window.webContents.on("dom-ready", () => {
-      window.webContents.executeJavaScript(`DiscordNative.nativeModules.requireModule("discord_acrylic");`);
-    });
-  }
+  // Prevents other mods from removing CSP
+  electronCache.exports.session.defaultSession.webRequest.onHeadersReceived =
+    () => {
+      console.log("[RawDog] Prevented CSP from being modified...");
+    };
 });
+//#endregion
+
+const { BrowserWindow } = electron;
+const propertyNames = Object.getOwnPropertyNames(electronCache.exports);
+
+delete electronCache.exports;
+// Make a new electron that will use the new 'BrowserWindow'
+const newElectron = {}
+for (const propertyName of propertyNames) {
+  Object.defineProperty(newElectron, propertyName, {
+    ...Object.getOwnPropertyDescriptor(electron, propertyName),
+    get: () => propertyName === "BrowserWindow" ? class extends BrowserWindow {
+      constructor(opts) {
+
+        if(opts.resizable) {
+          opts.frame = true;
+        }
+
+        const window = new BrowserWindow(opts);
+
+        if(window.resizable && !mainWindow) {
+          console.log("[Acrylic] Found Discord window.");
+
+          mainWindow = window;
+
+          window.webContents.on("dom-ready", () => {
+            window.setBackgroundColor("#00000000");
+            vibe.setDarkMode(window);
+            window.webContents.executeJavaScript(`DiscordNative.nativeModules.requireModule("discord_acrylic");`);
+          });
+        }
+
+        return window;
+      }
+    } : electron[propertyName]
+  })
+}
+
+electronCache.exports = newElectron;
+//#endregion
 
 module.exports = require(originalAppPath);
 
+function loadCss() {
+  return fs.readFileSync(path.join(basePath, "app", "theme.css"), "utf8");
+}
 
 function removeCss(window) {
   window.webContents.executeJavaScript(`document.getElementById("acrylic")?.remove?.();`);
 }
 
-function injectCss(window) {
-  const css = fs.readFileSync(path.join(basePath, "app", "theme.css"), "utf8");
-  window.webContents.executeJavaScript(`document.body.insertAdjacentHTML("beforeend", \`<style id="acrylic">${css}</style>\`);`);
+function injectCss(window, css, id = "acrylic") {
+  window.webContents.executeJavaScript(`document.body.insertAdjacentHTML("beforeend", \`<style id="${id}">${css}</style>\`);`);
 }
 
 electron.ipcMain.handle("isMainProcessAlive", () => {
   console.log("[Acrylic] Injected into render process.");
+  injectCss(mainWindow, ".titleBar-1it3bQ { display: none; }", "acrylic-titlebar-remove");
   return true;
 });
 
 electron.ipcMain.on("css-enable", () => {
-  injectCss(mainWindow);
+  console.log("injecting css");
+  injectCss(mainWindow, loadCss());
 });
 
 electron.ipcMain.on("css-disable", () => {
+  console.log("removing css");
   removeCss(mainWindow);
 });
 
 electron.ipcMain.on("css-reload", () => {
+  console.log("reloading css");
   removeCss(mainWindow);
-  injectCss(mainWindow);
+  injectCss(mainWindow, loadCss());
 });
 
 electron.ipcMain.on("enable", () => {
+  console.log("enabling acrylic");
   vibe.applyEffect(mainWindow, "acrylic");
 });
 
 electron.ipcMain.on("disable", () => {
+  console.log("disabling acrylic");
   vibe.clearEffects(mainWindow);
 });
