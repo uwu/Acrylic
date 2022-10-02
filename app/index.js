@@ -113,6 +113,10 @@ function loadCss() {
   return fs.readFileSync(path.join(basePath, "app", "theme.css"), "utf8");
 }
 
+function saveCss(css) {
+  return fs.writeFileSync(path.join(basePath, "app", "theme.css"), css);
+}
+
 function removeCss(window) {
   window.webContents.executeJavaScript(`document.getElementById("acrylic")?.remove?.();`);
 }
@@ -127,28 +131,50 @@ electron.ipcMain.handle("isMainProcessAlive", () => {
   return true;
 });
 
+electron.ipcMain.on("open-css", () => {
+  const cssEditor = new BrowserWindow({
+		width: 1000,
+		height: 800,
+		autoHideMenuBar: true,
+    webPreferences: {
+      preload: path.join(path.join(basePath, "app", "css_editor", "preload.js")),
+    },
+	});
+
+	cssEditor.setIcon(path.join(basePath, "app", "css_editor", "favicon.png"));
+	cssEditor.loadFile(path.join(basePath, "app", "css_editor", "index.html"));
+});
+
+electron.ipcMain.on("get-css", (event) => {
+  event.returnValue = loadCss();
+});
+
+electron.ipcMain.on("save-css", (event, css) => {
+  saveCss(css);
+});
+
 electron.ipcMain.on("css-enable", () => {
-  console.log("injecting css");
+  console.log("[Acrylic] Injecting CSS.");
   injectCss(mainWindow, loadCss());
 });
 
 electron.ipcMain.on("css-disable", () => {
-  console.log("removing css");
+  console.log("[Acrylic] Removing CSS.");
   removeCss(mainWindow);
 });
 
 electron.ipcMain.on("css-reload", () => {
-  console.log("reloading css");
+  console.log("[Acrylic] Reloading CSS.");
   removeCss(mainWindow);
   injectCss(mainWindow, loadCss());
 });
 
 electron.ipcMain.on("enable", () => {
-  console.log("enabling acrylic");
+  console.log("[Acrylic] Enabling Acrylic.");
   vibe.applyEffect(mainWindow, "acrylic");
 });
 
 electron.ipcMain.on("disable", () => {
-  console.log("disabling acrylic");
+  console.log("[Acrylic] Disabling Acrylic.");
   vibe.clearEffects(mainWindow);
 });

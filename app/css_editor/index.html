@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>CSS Editor</title>
+	<style>
+        #editor {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+        }
+	</style>
+</head>
+
+<body>
+    <div id="editor"></div>
+    <script type=module>
+        import loader from "https://esm.sh/@monaco-editor/loader";
+
+        let css = window.utils.getCss();
+
+        let timer = null;
+        function debounceSaveCss() {
+            if (timer) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(() => {
+                window.utils.saveCss(monacoModel.getValue());
+                window.utils.reloadCss();
+            }, 300);
+        }
+
+        let monaco = await loader.init();
+        let monacoModel = monaco.editor.create(window.editor, {
+            value: css,
+            language: "css",
+            theme: "vs-dark",
+            automaticLayout: true
+        });
+        monacoModel.onDidChangeModelContent(debounceSaveCss);
+    </script>
+</body>
+
+</html>

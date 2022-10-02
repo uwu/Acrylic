@@ -32,9 +32,16 @@ ipcRenderer.invoke('isMainProcessAlive').then(async () => {
                 if(settings.css) {
                     ipcRenderer.send('css-reload');
                 }
+            },
+            openEditor: () => {
+                if(!settings.css) {
+                    ipcRenderer.send('css-enable');
+                    saveSettings({ ...settings, css: true });
+                }
+                ipcRenderer.send('open-css');
             }
         }
-    };
+    }
 
     contextBridge.exposeInMainWorld('acrylic', acrylic);
     if(settings.acrylic) {

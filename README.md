@@ -18,8 +18,11 @@
 # Usage
  By default, Acrylic will inject it's own included css theme, making it standalone in case you don't want to use it with another mod.
  A simple API is exposed on `window.acrylic`, allowing quick toggling of both acrylic features and css.
- Settings are stored in IDB.
+ To open the CSS editor, use `window.acrylic.css.openEditor()`.
+
+ Settings are stored in IDB, under the `acrylic/settings` table.
 
 # Credits
  - [Impregnate](https://github.com/Cumcord/Impregnate) for injection
  - [Vibe](https://github.com/pykeio/vibe) for composition effects in electron apps
+ - [Monaco Editor](https://microsoft.github.io/monaco-editor/) and [Monaco Loader](https://github.com/suren-atoyan/monaco-loader)
