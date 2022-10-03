@@ -51,7 +51,7 @@
           background: var(--background-secondary);
         }
 
-        .container-ZMc96U.themed-Hp1KC_ {
+        .container-ZMc96U.themed-Hp1KC_, .userPopoutOverlayBackground-dKOOda {
           background: var(--background-tertiary);
         }
 
@@ -72,7 +72,7 @@
         .userPopout-2j1gM4, .contentWrapper-3vHNP2,
         .tooltip-14MtrL, .messagesPopoutWrap-3zryHW,
         .browser-mnQ1T7, .recentMentionsPopout-2bI1ZN,
-        .wrapper-2vIMkT {
+        .wrapper-2vIMkT, .userPopoutOuter-3AVBmJ {
           background-color: var(--background-floating);
         }
 
