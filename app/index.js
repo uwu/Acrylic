@@ -4,6 +4,7 @@ const fs = require("fs");
 
 
 var vibe = null;
+var cssEditor = null;
 
 if(process.platform === "win32") {
   vibe = require("./vibe.node");
@@ -26,13 +27,29 @@ function copyDir(src, dest) {
   }
 }
 
-const basePath = path.join(path.dirname(require.main.filename), "..");
-const modulesPath = path.join(basePath, "..", "modules");
-const corePath = fs.readdirSync(modulesPath).find(folder => folder.includes('discord_desktop_core-'));
-const acrylicPath = path.join(modulesPath, corePath, 'discord_acrylic');
+if(process.platform != "darwin") {
+  const basePath = path.join(path.dirname(require.main.filename), "..");
+  const modulesPath = path.join(basePath, "..", "modules");
+  const corePath = fs.readdirSync(modulesPath).find(folder => folder.includes('discord_desktop_core-'));
+  const acrylicPath = path.join(modulesPath, corePath, 'discord_acrylic');
 
-fs.rmdirSync(acrylicPath, { recursive: true });
-copyDir(path.join(basePath, "app", "discord_acrylic"), acrylicPath);
+  fs.rmdirSync(acrylicPath, { recursive: true });
+  copyDir(path.join(basePath, "app", "discord_acrylic"), acrylicPath);
+} else {
+  // TODO: Support MacOS since it has a weird path
+  const options = {
+      type: 'warning',
+      buttons: ['Continue', 'Close Discord'],
+      defaultId: 0,
+      title: 'Warning',
+      message: `Acrylic is not supported on MacOS yet! I'll do my best to support it very soon though!`,
+      detail: `If you continue, Discord will load up normally and Acrylic won't be injected.\nPlease consider uninstalling for now!`
+  };
+
+  if (electron.dialog.showMessageBoxSync(null, options)) process.exit();
+  else return;
+}
+
 
 let originalAppPath = path.join(basePath, "app.asar");
 
@@ -140,22 +157,27 @@ electron.ipcMain.handle("isMainProcessAlive", () => {
 });
 
 electron.ipcMain.on("open-css", () => {
-  const cssEditor = new BrowserWindow({
-		width: 1000,
-		height: 800,
-		autoHideMenuBar: true,
-    backgroundColor: "#1e1e1e",
-    webPreferences: {
-      preload: path.join(path.join(basePath, "app", "css_editor", "preload.js")),
-    },
-	});
+  if(!cssEditor) {
+    cssEditor = new BrowserWindow({
+      width: 1000,
+      height: 800,
+      autoHideMenuBar: true,
+      backgroundColor: "#1e1e1e",
+      webPreferences: {
+        preload: path.join(path.join(basePath, "app", "css_editor", "preload.js")),
+      },
+    });
 
-  if(process.platform == "win32") {
-    vibe.setDarkMode(cssEditor);
+    if(process.platform == "win32") {
+      vibe.setDarkMode(cssEditor);
+    }
+
+    cssEditor.setIcon(path.join(basePath, "app", "css_editor", "favicon.png"));
+    cssEditor.loadFile(path.join(basePath, "app", "css_editor", "index.html"));
+    cssEditor.on("closed", () => { cssEditor = null });
+  } else {
+    cssEditor.focus();
   }
-
-	cssEditor.setIcon(path.join(basePath, "app", "css_editor", "favicon.png"));
-	cssEditor.loadFile(path.join(basePath, "app", "css_editor", "index.html"));
 });
 
 electron.ipcMain.on("get-css", (event) => {

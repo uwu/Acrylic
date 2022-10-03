@@ -22,7 +22,7 @@
           --channeltextarea-background: #9289891f;
           --background-modifier-accent: #fffefe15;
           --background-modifier-selected: var(--background-tertiary);
-          --scrollbar-thin-thumb: var(--background-primary);
+          --scrollbar-thin-thumb: var(--background-tertiary);
           --scrollbar-thin-track: var(--background-primary);
           --scrollbar-auto-thumb: var(--background-tertiary);
           --scrollbar-auto-track: var(--background-primary);
@@ -34,8 +34,12 @@
         .members-3WRCEx, .members-3WRCEx>div,
         .scroller-3X7KbA, .guilds-2JjMmN,
         .container-1NXEtd, .container-2McqkF,
-        .channelName-3w2Y3c {
+        .channelName-3w2Y3c, .bodyInnerWrapper-2bQs1k {
           background: transparent !important;
+        }
+
+        .sidebar-1tnWFu {
+          border-radius: 8px 0px 0px 8px !important;
         }
 
         .chat-2ZfjoI, .scroller-1ox3I2 {
@@ -51,17 +55,24 @@
           background: var(--background-tertiary);
         }
 
+        .container-1zzFcN {
+          border: transparent;
+          background: var(--background-tertiary);
+        }
+
         .circleIconButton-1VxDrg, .childWrapper-1j_1ub {
           color:white;
           background: var(--background-logo);
         }
+        
         .circleIconButton-1VxDrg.selected-2r1Hvo {
           background: var(--background-floating);
         }
 
         .userPopout-2j1gM4, .contentWrapper-3vHNP2,
         .tooltip-14MtrL, .messagesPopoutWrap-3zryHW,
-        .browser-mnQ1T7, .recentMentionsPopout-2bI1ZN {
+        .browser-mnQ1T7, .recentMentionsPopout-2bI1ZN,
+        .wrapper-2vIMkT {
           background-color: var(--background-floating);
         }
 
@@ -76,21 +87,41 @@
           margin-top: 2.0rem !important;
         }
 
+        .divider-IqmEqJ.isUnread-3Lojb- {
+          margin-top: 1px !important;
+        }
+
         .content-3spvdd {
           transform: translate(0%, -100%);
+        }
+
+        .chat-2ZfjoI {
+          border-radius: 0px 8px 0px 0px;
+        }
+
+        .scrollerSpacer-3AqkT9 {
+          height: 30px;
         }
 
         .container-YkUktl {
           background: var(--background-tertiary);
           height: 60px;
         }
-
+      
         .messagesWrapper-RpOMA3 {
           margin-bottom: 8px;
         }
 
         .form-3gdLxP {
           background: var(--background-tertiary);
+        }
+
+        .typing-2J1mQU {
+          background: var(--background-tertiary);
+          position: absolute;
+          top: 0px;
+          transform: translate(0px, -24px);
+          border-radius: 8px 8px 0px 0px;
         }
 
         .channelTextArea-1FufC0 {
