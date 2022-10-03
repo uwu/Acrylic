@@ -27,14 +27,16 @@ function copyDir(src, dest) {
   }
 }
 
+const basePath = path.join(path.dirname(require.main.filename), "..");
+const modulesPath = path.join(basePath, "..", "modules");
+const corePath = fs.readdirSync(modulesPath).find(folder => folder.includes('discord_desktop_core-'));
+const acrylicPath = path.join(modulesPath, corePath, 'discord_acrylic');
+
 if(process.platform != "darwin") {
-  const basePath = path.join(path.dirname(require.main.filename), "..");
-  const modulesPath = path.join(basePath, "..", "modules");
-  const corePath = fs.readdirSync(modulesPath).find(folder => folder.includes('discord_desktop_core-'));
-  const acrylicPath = path.join(modulesPath, corePath, 'discord_acrylic');
 
   fs.rmdirSync(acrylicPath, { recursive: true });
   copyDir(path.join(basePath, "app", "discord_acrylic"), acrylicPath);
+
 } else {
   // TODO: Support MacOS since it has a weird path
   const options = {
