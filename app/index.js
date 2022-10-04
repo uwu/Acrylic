@@ -2,9 +2,9 @@ const electron = require("electron");
 const path = require("path");
 const fs = require("fs");
 
-
 var vibe = null;
 var cssEditor = null;
+var mainWindow = null;
 
 if(process.platform === "win32") {
   vibe = require("./vibe.node");
@@ -13,8 +13,6 @@ if(process.platform === "win32") {
 } else {
   console.log("[Acrylic] Not getting the right vibes...");
 }
-
-let mainWindow = null;
 
 function copyDir(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
@@ -28,28 +26,28 @@ function copyDir(src, dest) {
 }
 
 const basePath = path.join(path.dirname(require.main.filename), "..");
-const modulesPath = path.join(basePath, "..", "modules");
-const corePath = fs.readdirSync(modulesPath).find(folder => folder.includes('discord_desktop_core-'));
-const acrylicPath = path.join(modulesPath, corePath, 'discord_acrylic');
+
+console.log(basePath)
 
 if(process.platform != "darwin") {
-
+  const modulesPath = path.join(basePath, "..", "modules");
+  const corePath = fs.readdirSync(modulesPath).find(folder => folder.includes('discord_desktop_core-'));
+  const acrylicPath = path.join(modulesPath, corePath, 'discord_acrylic');
+  
   fs.rmdirSync(acrylicPath, { recursive: true });
   copyDir(path.join(basePath, "app", "discord_acrylic"), acrylicPath);
 
 } else {
-  // TODO: Support MacOS since it has a weird path
-  const options = {
-      type: 'warning',
-      buttons: ['Continue', 'Close Discord'],
-      defaultId: 0,
-      title: 'Warning',
-      message: `Acrylic is not supported on MacOS yet! I'll do my best to support it very soon though!`,
-      detail: `If you continue, Discord will load up normally and Acrylic won't be injected.\nPlease consider uninstalling for now!`
-  };
+  const os = require("os");
 
-  if (electron.dialog.showMessageBoxSync(null, options)) process.exit();
-  else return;
+  const homePath = os.homedir();
+
+  const hostBasePath = path.join(homePath, "Library/Application\ Support/discord");
+  const modulesPath = path.join(hostBasePath, fs.readdirSync(hostBasePath).find(folder => folder.split(".").length == 3), "modules");
+  const acrylicPath = path.join(modulesPath, 'discord_acrylic');
+  
+  fs.rmdirSync(acrylicPath, { recursive: true });
+  copyDir(path.join(basePath, "app", "discord_acrylic"), acrylicPath);
 }
 
 
@@ -106,6 +104,7 @@ for (const propertyName of propertyNames) {
 
         if(opts.resizable && process.platform == "win32") {
           opts.frame = true;
+          opts.webPreferences.devTools = true;
         }
 
         const window = new BrowserWindow(opts);
