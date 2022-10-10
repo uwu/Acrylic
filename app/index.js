@@ -33,7 +33,7 @@ if(process.platform != "darwin") {
   const modulesPath = path.join(basePath, "..", "modules");
   const corePath = fs.readdirSync(modulesPath).find(folder => folder.includes('discord_desktop_core-'));
   const acrylicPath = path.join(modulesPath, corePath, 'discord_acrylic');
-  
+
   fs.rmdirSync(acrylicPath, { recursive: true });
   copyDir(path.join(basePath, "app", "discord_acrylic"), acrylicPath);
 
@@ -45,7 +45,7 @@ if(process.platform != "darwin") {
   const hostBasePath = path.join(homePath, "Library/Application\ Support/discord");
   const modulesPath = path.join(hostBasePath, fs.readdirSync(hostBasePath).find(folder => folder.split(".").length == 3), "modules");
   const acrylicPath = path.join(modulesPath, 'discord_acrylic');
-  
+
   fs.rmdirSync(acrylicPath, { recursive: true });
   copyDir(path.join(basePath, "app", "discord_acrylic"), acrylicPath);
 }

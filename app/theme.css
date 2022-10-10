@@ -416,6 +416,7 @@ body,
 
 .bg-AYqtMd {
   -webkit-mask-image: linear-gradient(#000f, #0000) !important;
+  mask-image: linear-gradient(#000f, #0000) !important;
 }
 
 .scrollableContainer-2NUZem {
