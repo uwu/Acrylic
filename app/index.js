@@ -6,7 +6,7 @@ var vibe = null;
 var cssEditor = null;
 var mainWindow = null;
 
-if(process.platform === "win32") {
+if (process.platform === "win32") {
   vibe = require("./vibe.node");
   vibe.setup(electron.app);
   console.log("[Acrylic] Setting up the vibe~");
@@ -18,40 +18,55 @@ function copyDir(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
   const entries = fs.readdirSync(src, { withFileTypes: true });
   for (let entry of entries) {
-      let srcPath = path.join(src, entry.name);
-      let destPath = path.join(dest, entry.name);
+    let srcPath = path.join(src, entry.name);
+    let destPath = path.join(dest, entry.name);
 
-      entry.isDirectory() ? copyDir(srcPath, destPath) : fs.copyFileSync(srcPath, destPath);
+    entry.isDirectory()
+      ? copyDir(srcPath, destPath)
+      : fs.copyFileSync(srcPath, destPath);
   }
 }
 
 const basePath = path.join(path.dirname(require.main.filename), "..");
 
-console.log(basePath)
+console.log(basePath);
 
-if(process.platform != "darwin") {
+if (process.platform != "darwin") {
   const modulesPath = path.join(basePath, "..", "modules");
-  const corePath = fs.readdirSync(modulesPath).find(folder => folder.includes('discord_desktop_core-'));
-  const acrylicPath = path.join(modulesPath, corePath, 'discord_acrylic');
+  const corePath = fs
+    .readdirSync(modulesPath)
+    .find((folder) => folder.includes("discord_desktop_core-"));
+  const acrylicPath = path.join(modulesPath, corePath, "discord_acrylic");
 
-  fs.rmdirSync(acrylicPath, { recursive: true });
+  if (fs.existsSync(acrylicPath)) {
+    fs.rmdirSync(acrylicPath, { recursive: true });
+  }
   copyDir(path.join(basePath, "app", "discord_acrylic"), acrylicPath);
-
 } else {
   const os = require("os");
 
   const homePath = os.homedir();
 
-  const hostBasePath = path.join(homePath, "Library/Application\ Support/discord");
-  const modulesPath = path.join(hostBasePath, fs.readdirSync(hostBasePath).find(folder => folder.split(".").length == 3), "modules");
-  const acrylicPath = path.join(modulesPath, 'discord_acrylic');
+  const hostBasePath = path.join(
+    homePath,
+    "Library/Application Support/discord"
+  );
+  const modulesPath = path.join(
+    hostBasePath,
+    fs
+      .readdirSync(hostBasePath)
+      .find((folder) => folder.split(".").length == 3),
+    "modules"
+  );
+  const acrylicPath = path.join(modulesPath, "discord_acrylic");
 
-  fs.rmdirSync(acrylicPath, { recursive: true });
+  if (fs.existsSync(acrylicPath)) {
+    fs.rmdirSync(acrylicPath, { recursive: true });
+  }
   copyDir(path.join(basePath, "app", "discord_acrylic"), acrylicPath);
 }
 
-
-let originalAppPath = path.join(basePath, "app.asar");
+let originalAppPath = path.join(basePath, "original.asar");
 
 const originalPackage = require(path.resolve(
   path.join(originalAppPath, "package.json")
@@ -95,39 +110,43 @@ const propertyNames = Object.getOwnPropertyNames(electronCache.exports);
 
 delete electronCache.exports;
 // Make a new electron that will use the new 'BrowserWindow'
-const newElectron = {}
+const newElectron = {};
 for (const propertyName of propertyNames) {
   Object.defineProperty(newElectron, propertyName, {
     ...Object.getOwnPropertyDescriptor(electron, propertyName),
-    get: () => propertyName === "BrowserWindow" ? class extends BrowserWindow {
-      constructor(opts) {
+    get: () =>
+      propertyName === "BrowserWindow"
+        ? class extends BrowserWindow {
+            constructor(opts) {
+              if (opts.resizable && process.platform == "win32") {
+                opts.frame = true;
+                opts.webPreferences.devTools = true;
+              }
 
-        if(opts.resizable && process.platform == "win32") {
-          opts.frame = true;
-          opts.webPreferences.devTools = true;
-        }
+              const window = new BrowserWindow(opts);
 
-        const window = new BrowserWindow(opts);
+              if (window.resizable && !mainWindow) {
+                console.log("[Acrylic] Found Discord window.");
 
-        if(window.resizable && !mainWindow) {
-          console.log("[Acrylic] Found Discord window.");
+                mainWindow = window;
 
-          mainWindow = window;
+                window.webContents.on("dom-ready", () => {
+                  if (process.platform == "win32") {
+                    window.setBackgroundColor("#00000000");
+                    vibe.setDarkMode(window);
+                  }
 
-          window.webContents.on("dom-ready", () => {
-            if(process.platform == "win32") {
-              window.setBackgroundColor("#00000000");
-              vibe.setDarkMode(window);
+                  window.webContents.executeJavaScript(
+                    `DiscordNative.nativeModules.requireModule("discord_acrylic");`
+                  );
+                });
+              }
+
+              return window;
             }
-
-            window.webContents.executeJavaScript(`DiscordNative.nativeModules.requireModule("discord_acrylic");`);
-          });
-        }
-
-        return window;
-      }
-    } : electron[propertyName]
-  })
+          }
+        : electron[propertyName],
+  });
 }
 
 electronCache.exports = newElectron;
@@ -144,38 +163,50 @@ function saveCss(css) {
 }
 
 function removeCss(window) {
-  window.webContents.executeJavaScript(`document.getElementById("acrylic")?.remove?.();`);
+  window.webContents.executeJavaScript(
+    `document.getElementById("acrylic")?.remove?.();`
+  );
 }
 
 function injectCss(window, css, id = "acrylic") {
-  window.webContents.executeJavaScript(`document.body.insertAdjacentHTML("beforeend", \`<style id="${id}">${css}</style>\`);`);
+  window.webContents.executeJavaScript(
+    `document.body.insertAdjacentHTML("beforeend", \`<style id="${id}">${css}</style>\`);`
+  );
 }
 
 electron.ipcMain.handle("isMainProcessAlive", () => {
   console.log("[Acrylic] Injected into render process.");
-  injectCss(mainWindow, ".titleBar-1it3bQ { display: none; }", "acrylic-titlebar-remove");
+  injectCss(
+    mainWindow,
+    ".titleBar-1it3bQ { display: none; }",
+    "acrylic-titlebar-remove"
+  );
   return true;
 });
 
 electron.ipcMain.on("open-css", () => {
-  if(!cssEditor) {
+  if (!cssEditor) {
     cssEditor = new BrowserWindow({
       width: 1000,
       height: 800,
       autoHideMenuBar: true,
       backgroundColor: "#1e1e1e",
       webPreferences: {
-        preload: path.join(path.join(basePath, "app", "css_editor", "preload.js")),
+        preload: path.join(
+          path.join(basePath, "app", "css_editor", "preload.js")
+        ),
       },
     });
 
-    if(process.platform == "win32") {
+    if (process.platform == "win32") {
       vibe.setDarkMode(cssEditor);
     }
 
     cssEditor.setIcon(path.join(basePath, "app", "css_editor", "favicon.png"));
     cssEditor.loadFile(path.join(basePath, "app", "css_editor", "index.html"));
-    cssEditor.on("closed", () => { cssEditor = null });
+    cssEditor.on("closed", () => {
+      cssEditor = null;
+    });
   } else {
     cssEditor.focus();
   }
