@@ -18,39 +18,42 @@ Stripped for use in this project.
 */
 
 function promisifyRequest(request) {
-    return new Promise((resolve, reject) => {
-        request.oncomplete = request.onsuccess = () => resolve(request.result);
-        request.onabort = request.onerror = () => reject(request.error);
-    });
+  return new Promise((resolve, reject) => {
+    request.oncomplete = request.onsuccess = () => resolve(request.result);
+    request.onabort = request.onerror = () => reject(request.error);
+  });
 }
 
 function createStore(dbName, storeName) {
-    const request = indexedDB.open(dbName);
-    request.onupgradeneeded = () => request.result.createObjectStore(storeName);
-    const dbp = promisifyRequest(request);
-    return (txMode, callback) => dbp.then((db) => callback(db.transaction(storeName, txMode).objectStore(storeName)));
+  const request = indexedDB.open(dbName);
+  request.onupgradeneeded = () => request.result.createObjectStore(storeName);
+  const dbp = promisifyRequest(request);
+  return (txMode, callback) =>
+    dbp.then((db) =>
+      callback(db.transaction(storeName, txMode).objectStore(storeName))
+    );
 }
 
 let _store = null;
 
 function getStore() {
-    if (!_store) {
-        _store = createStore('acrylic', 'settings');
-    }
-    return _store;
+  if (!_store) {
+    _store = createStore("acrylic", "settings");
+  }
+  return _store;
 }
 
 function get(key) {
-    getStore();
-    return _store('readonly', (store) => promisifyRequest(store.get(key)));
+  getStore();
+  return _store("readonly", (store) => promisifyRequest(store.get(key)));
 }
 
 function set(key, value) {
-    getStore();
-    return _store('readwrite', (store) => {
-        store.put(value, key);
-        return promisifyRequest(store.transaction);
-    });
+  getStore();
+  return _store("readwrite", (store) => {
+    store.put(value, key);
+    return promisifyRequest(store.transaction);
+  });
 }
 
-module.exports = { get, set }
+module.exports = { get, set };

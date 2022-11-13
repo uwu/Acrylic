@@ -29,8 +29,6 @@ function copyDir(src, dest) {
 
 const basePath = path.join(path.dirname(require.main.filename), "..");
 
-console.log(basePath);
-
 if (process.platform != "darwin") {
   const modulesPath = path.join(basePath, "..", "modules");
   const corePath = fs
@@ -119,9 +117,12 @@ for (const propertyName of propertyNames) {
         ? class extends BrowserWindow {
             constructor(opts) {
               if (opts.resizable && process.platform == "win32") {
-                opts.frame = true;
-                opts.webPreferences.devTools = true;
+                if (vibe.platform.isWin11()) {
+                  opts.frame = true;
+                }
               }
+
+              opts.webPreferences.devTools = true;
 
               const window = new BrowserWindow(opts);
 
@@ -133,7 +134,7 @@ for (const propertyName of propertyNames) {
                 window.webContents.on("dom-ready", () => {
                   if (process.platform == "win32") {
                     window.setBackgroundColor("#00000000");
-                    vibe.setDarkMode(window);
+                    vibe.forceTheme(window, "dark");
                   }
 
                   window.webContents.executeJavaScript(
@@ -176,11 +177,13 @@ function injectCss(window, css, id = "acrylic") {
 
 electron.ipcMain.handle("isMainProcessAlive", () => {
   console.log("[Acrylic] Injected into render process.");
-  injectCss(
-    mainWindow,
-    ".titleBar-1it3bQ { display: none; }",
-    "acrylic-titlebar-remove"
-  );
+  if (vibe.platform.isWin11()) {
+    injectCss(
+      mainWindow,
+      ".titleBar-1it3bQ { display: none; }",
+      "acrylic-titlebar-remove"
+    );
+  }
   return true;
 });
 
@@ -199,7 +202,7 @@ electron.ipcMain.on("open-css", () => {
     });
 
     if (process.platform == "win32") {
-      vibe.setDarkMode(cssEditor);
+      vibe.forceTheme(cssEditor, "dark");
     }
 
     cssEditor.setIcon(path.join(basePath, "app", "css_editor", "favicon.png"));
@@ -216,7 +219,7 @@ electron.ipcMain.on("get-css", (event) => {
   event.returnValue = loadCss();
 });
 
-electron.ipcMain.on("save-css", (event, css) => {
+electron.ipcMain.on("save-css", (_, css) => {
   saveCss(css);
 });
 
@@ -236,9 +239,15 @@ electron.ipcMain.on("css-reload", () => {
   injectCss(mainWindow, loadCss());
 });
 
-electron.ipcMain.on("enable", () => {
+const types = ["mica", "acrylic", "blurbehind"];
+
+electron.ipcMain.on("enable", (_, type) => {
   console.log("[Acrylic] Enabling Acrylic.");
-  vibe?.applyEffect?.(mainWindow, "acrylic");
+  if ((type == 0 && !vibe.platform.isWin11()) || type === undefined) {
+    type = 1;
+  }
+  console.log("[Acrylic] Type: " + types[type]);
+  vibe?.applyEffect?.(mainWindow, types[type]);
 });
 
 electron.ipcMain.on("disable", () => {
