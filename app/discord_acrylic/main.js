@@ -13,6 +13,11 @@ ipcRenderer.invoke("isMainProcessAlive").then(async () => {
 
   const acrylic = {
     version: "2.0.0",
+    internal: {
+      getSettings: () => {
+        return settings;
+      },
+    },
 
     enable: () => {
       ipcRenderer.send("enable", settings.type);
