@@ -39,7 +39,9 @@ body,
 .guilds-2JjMmN,
 .container-1NXEtd,
 .channelName-3w2Y3c,
-.bodyInnerWrapper-2bQs1k {
+.bodyInnerWrapper-2bQs1k,
+.member-48YF_l,
+.container-3wLKDe {
   background: transparent !important;
 }
 
@@ -52,7 +54,8 @@ body,
 }
 
 .chat-2ZfjoI,
-.scroller-1ox3I2 {
+.scroller-1ox3I2,
+.peopleColumn-1wMU14 {
   background: var(--background-secondary);
 }
 
