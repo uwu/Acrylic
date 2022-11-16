@@ -41,7 +41,8 @@ body,
 .channelName-3w2Y3c,
 .bodyInnerWrapper-2bQs1k,
 .member-48YF_l,
-.container-3wLKDe {
+.container-3wLKDe,
+.content-1jQy2l {
   background: transparent !important;
 }
 
@@ -55,8 +56,9 @@ body,
 
 .chat-2ZfjoI,
 .scroller-1ox3I2,
-.peopleColumn-1wMU14 {
-  background: var(--background-secondary);
+.peopleColumn-1wMU14,
+.background-fkKrXt {
+  background: var(--background-secondary) !important;
 }
 
 .searchBar-3TnChZ,
@@ -107,12 +109,13 @@ body,
   display: none;
 }
 
-.divider-IqmEqJ {
-  margin-top: 2rem !important;
+.divider-IqmEqJ.isUnread-3Lojb- {
+  margin-top: 0px !important;
 }
 
-.divider-IqmEqJ.isUnread-3Lojb- {
-  margin-top: 1px !important;
+.divider-IqmEqJ,
+.divider-IqmEqJ.hasContent-31hcsn {
+  margin-top: 2rem !important;
 }
 
 .content-3spvdd {
