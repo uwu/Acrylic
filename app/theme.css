@@ -59,7 +59,6 @@ body,
 .bg-1QIAus,
 .members-3WRCEx,
 .members-3WRCEx > div,
-.scroller-3X7KbA,
 .guilds-2JjMmN,
 .container-1NXEtd,
 .channelName-3w2Y3c,
@@ -79,7 +78,9 @@ body,
 }
 
 .searchBar-3TnChZ,
-.header-11eigE {
+.header-11eigE,
+.sidebar-1tnWFu,
+.scroller-WSmht3 {
    background: transparent !important;
 }
 
@@ -115,6 +116,8 @@ body,
 .circleIconButton-1VxDrg.selected-2r1Hvo {
    background: var(--background-floating);
 }
+
+/* .scroller-3X7KbA */
 
 .userPopout-2j1gM4,
 .contentWrapper-3vHNP2,
@@ -164,14 +167,14 @@ body,
 }
 
 .container-YkUktl {
-   background: #20222540;
+   background: #20222540 !important;
    margin-bottom: 0px;
    height: 61px;
 }
+/* #2f3136e0 */
 
-.embedFull-1HGV2S,
 .scroller-3X7KbA {
-   background: #2f3136e0 !important;
+   background: #2f313652 !important;
 }
 
 .messagesWrapper-RpOMA3 {
