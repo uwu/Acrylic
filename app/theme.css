@@ -1,5 +1,11 @@
+.theme-dark {
+   --background-fourth: transparent;
+   --background-modal: transparent;
+   --background-secondary: transparent;
+   --scrollbar-auto-track: var(--background-secondary);
+}
+
 .theme-light {
-   --background-primary: transparent;
    --background-fourth: #f2f3f5;
    --scrollbar-auto-track: var(--background-secondary);
    --channels-default: #272727;
@@ -19,10 +25,10 @@
 .theme-dark {
    --background-primary: transparent;
    --background-primary-alt: #36393ff0;
-   --background-secondary: #2022258c;
-   --background-secondary-chat: #2022258c;
-   --background-secondary-alt: #2022258c;
-   --background-tertiary: #2022258c;
+   --background-secondary: #2f313650;
+   --background-secondary-chat: #2f3136a0;
+   --background-secondary-alt: #292b2f00;
+   --background-tertiary: #20222570;
    --background-quaternay: #20222570;
    --background-logo: #36393fa0;
    --deprecated-card-bg: #36393f4c;
@@ -32,9 +38,6 @@
    --background-switcher: #2f3136a0;
    --background-chatbox: #20222550;
    --background-lights-out: #000;
-   --background-fourth: #2022258c;
-   --background-modal: #202225c2;
-   --scrollbar-auto-track: var(--background-secondary);
    --text-lights-out: #f0f0f0;
    --background-titlebar: #202225af;
    --background-floating: #383841ef;
@@ -75,6 +78,11 @@ body,
    border-radius: 8px 0px 0px 8px !important;
 }
 
+.searchBar-3TnChZ,
+.header-11eigE {
+   background: transparent !important;
+}
+
 .chat-2ZfjoI,
 .scroller-1ox3I2,
 .peopleColumn-1wMU14,
@@ -89,7 +97,7 @@ body,
 }
 
 .container-ZMc96U.themed-Hp1KC_ {
-   background: var(--background-tertiary);
+   background: transparent;
 }
 
 .container-1zzFcN,
@@ -147,14 +155,23 @@ body,
    border-radius: 0px 8px 0px 0px;
 }
 
+.none-2-_0dP {
+   margin-right: 0 !important;
+}
+
 .scrollerSpacer-3AqkT9 {
    height: 30px;
 }
 
 .container-YkUktl {
-   background: var(--background-tertiary);
+   background: #20222540;
    margin-bottom: 0px;
    height: 61px;
+}
+
+.embedFull-1HGV2S,
+.scroller-3X7KbA {
+   background: #2f3136e0 !important;
 }
 
 .messagesWrapper-RpOMA3 {
@@ -162,7 +179,7 @@ body,
 }
 
 .form-3gdLxP {
-   background: var(--background-tertiary);
+   background: transparent;
 }
 
 .typing-2J1mQU {
