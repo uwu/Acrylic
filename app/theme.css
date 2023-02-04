@@ -19,10 +19,10 @@
 .theme-dark {
    --background-primary: transparent;
    --background-primary-alt: #36393ff0;
-   --background-secondary: #2f313650;
-   --background-secondary-chat: #2f3136a0;
-   --background-secondary-alt: #292b2f00;
-   --background-tertiary: #20222570;
+   --background-secondary: #2022258c;
+   --background-secondary-chat: #2022258c;
+   --background-secondary-alt: #2022258c;
+   --background-tertiary: #2022258c;
    --background-quaternay: #20222570;
    --background-logo: #36393fa0;
    --deprecated-card-bg: #36393f4c;
