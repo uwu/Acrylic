@@ -8,7 +8,7 @@ This Discord mod is still a work in progress. Features and compatibility may cha
 
 # Installation
 
-1.  Copy `app` folder into `%userprofile%/AppData/Local/Discord/app-x.y.z/resources`
+1. Copy `app` folder into `%userprofile%/AppData/Local/Discord/app-x.y.z/resources`
 
     - The Discord folder name changes depending on the installed channel
 
@@ -17,7 +17,8 @@ This Discord mod is still a work in progress. Features and compatibility may cha
       | Stable  | `Discord`       |
       | Canary  | `DiscordCanary` |
 
-2.  That's it :)
+2. Rename app.asar to original.asar
+3. That's it :)
 
 # Usage
 
